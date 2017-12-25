@@ -43,6 +43,11 @@ module.exports = function(sails) {
         modelDef = models[modelName];
         sails.log.verbose('Loading model \'' + modelDef.globalId + '\'');
         var connection = modelDef.connection || defaultConnection;
+        if (!sequelizes[connection]){
+            console.error('connection ' + connection + ' not found. ignoring model ' + modelDef.globalId);
+            delete models[modelName];
+            continue;
+        }
         global[modelDef.globalId] = sequelizes[connection].define(modelDef.globalId, modelDef.attributes, modelDef.options);
         sails.models[modelDef.globalId.toLowerCase()] = global[modelDef.globalId];
       }
